@@ -11,6 +11,8 @@
 #include <Windows.h>
 #include <stdint.h>
 #include <Winbase.h>
+#include <omp.h>
+#include <ctime>
 
 #ifdef __GLIBC__
 #if !defined(_POSIX_C_SOURCE) && !defined(_POSIX_SOURCE)
@@ -24,7 +26,6 @@ typedef struct _SYSTEMTIME {
 	WORD wSecond;
 	WORD wMilliseconds;
 } SYSTEMTIME, *PSYSTEMTIME;
-
 #endif
 #endif
 
@@ -49,6 +50,7 @@ int main(int an, char **as)
 	init();
 	/* time0=omp_get_wtime (); */
 	//wtime(&time0);
+	unsigned int start_time = clock();
 	for (it = 1; it <= itmax; it++)
 	{
 		eps = 0.;
@@ -57,11 +59,14 @@ int main(int an, char **as)
 		printf("it=%4i   eps=%f\n", it, eps);
 		if (eps < maxeps) break;
 	}
-//	wtime(&time1);
+	unsigned int end_time = clock();
+	//	wtime(&time1);
 	/* time1=omp_get_wtime (); */
+	unsigned int search_time = end_time - start_time;
+	printf("Time:%gs\t", search_time);
 	//printf("Time in seconds=%gs\t", time1 - time0);
 	verify();
-	
+
 	system("pause");
 	return 0;
 }
